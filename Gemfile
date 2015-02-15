@@ -47,3 +47,5 @@ gem 'devise'
 gem 'whatever', :require => false
 gem 'pry'
 gem 'pry-nav'
+gem 'less-rails'
+gem 'twitter-bootstrap-rails'

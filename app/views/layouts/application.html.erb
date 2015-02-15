@@ -2,13 +2,32 @@
 <html>
 <head>
   <title>Mayfly</title>
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+  <![endif]-->
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-
-<%= yield %>
+  <%= nav_bar :inverse => true, :fixed => :top, :responsive => true, :brand => "Mayfly" do %>
+    <ul class="nav navbar-nav navbar-text">
+      <% if user_signed_in? %>
+        <li><%= "Hello, " + current_user.name %></li>
+      <% end %>
+    </ul>
+    <ul class="nav navbar-nav navbar-right pull-right">
+      <% if user_signed_in? %>
+        <li><%= link_to "Sign Out", destroy_user_session_path, :method => :delete %></li>
+      <% end %>
+    </ul>
+  <% end %>
+  <div class="container-fluid">
+    <div class="row" style="padding-top: 60px">
+      <div class="span12" styple="text-align: center"><%= yield %></div>
+    </div>
+  </div>
 
 </body>
 </html>
