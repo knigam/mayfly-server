@@ -3,4 +3,14 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
+
+  has_many :devices, :dependent => :destroy
+
+  has_many :invites, :dependent => :destroy
+  has_many :events, :through => :invites
+
+  has_many :friendships, :dependent => :destroy
+  has_many :friends, :through => :friendships
+
+  has_many :groups, :dependent => :destroy
 end
