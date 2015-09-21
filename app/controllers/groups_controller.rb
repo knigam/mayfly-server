@@ -4,7 +4,7 @@ class GroupsController < ApplicationController
   respond_to :html
 
   def index
-    @groups = Group.all
+    @groups = current_user.groups
     respond_with(@groups)
   end
 
@@ -21,7 +21,7 @@ class GroupsController < ApplicationController
   end
 
   def create
-    @group = Group.new(group_params)
+    @group = current_user.groups.build(group_params)
     @group.save
     respond_with(@group)
   end
@@ -38,10 +38,10 @@ class GroupsController < ApplicationController
 
   private
     def set_group
-      @group = Group.find(params[:id])
+      @group = current_user.find(params[:id])
     end
 
     def group_params
-      params.require(:group).permit(:user_id, :name)
+      params.require(:group).permit(:name)
     end
 end

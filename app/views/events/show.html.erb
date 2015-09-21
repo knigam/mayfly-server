@@ -44,6 +44,22 @@
   <strong>Active:</strong>
   <%= @event.active %>
 </p>
+<% invite = @event.invites.find_by_user_id(current_user) %>
+<p>
+  <strong>Attending:</strong>
+  <%= invite.attending %>
+</p>
+<%= link_to "Toggle", event_invite_path(event_id: @event, invite: {id: invite.id, attending: !invite.attending}), method: :put %>
+
+<p>Users Attending:</p>
+<ul>
+    <% Invite.where(event_id: @event, attending: true).map{|i| i.user}.each do |u| %>
+        <li><%= u.name %></li>
+    <% end %>
+</ul>
+
+<%= link_to 'Invite Friends', new_event_invite_path(@event) %>
+<br />
 
 <%= link_to 'Edit', edit_event_path(@event) %> |
 <%= link_to 'Back', events_path %>

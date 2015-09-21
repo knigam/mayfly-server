@@ -1,10 +1,10 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :edit, :update, :destroy]
 
-  respond_to :html
+  respond_to :html, :json
 
   def index
-    @events = Event.all
+    @events = current_user.invites.map{ |i| i if (i.event.active && (i.event.max == -1 || i.attending || i.event.invites.where(attending: true).count < i.event.max))}.compact.map{|i| i.event}
     respond_with(@events)
   end
 
@@ -21,8 +21,11 @@ class EventsController < ApplicationController
   end
 
   def create
-    @event = Event.new(event_params)
-    @event.save
+    @event = current_user.events.build(event_params)
+    if @event.save
+        invite = current_user.invites.build(:event_id => @event.id, :attending => true, :creator => true)
+        invite.save
+    end
     respond_with(@event)
   end
 
@@ -38,7 +41,7 @@ class EventsController < ApplicationController
 
   private
     def set_event
-      @event = Event.find(params[:id])
+      @event = current_user.events.find(params[:id])
     end
 
     def event_params

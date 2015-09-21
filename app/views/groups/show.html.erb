@@ -1,14 +1,13 @@
+<h1><%= @group.name %></h1> 
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>User:</strong>
-  <%= @group.user_id %>
-</p>
-
-<p>
-  <strong>Name:</strong>
-  <%= @group.name %>
-</p>
+<p>Group Members:</p>
+<ul>
+<% @group.friends.each do |f| %>
+    <li><%= f.name %></li>
+<% end %>
+</ul>
+<%= link_to 'Add friend', new_group_grouping_path(@group) %>
 
 <%= link_to 'Edit', edit_group_path(@group) %> |
 <%= link_to 'Back', groups_path %>

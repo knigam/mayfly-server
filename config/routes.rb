@@ -1,16 +1,20 @@
 Rails.application.routes.draw do
-  root 'welcome#index'
-  resources :devices
+    root 'welcome#index'
+    resources :devices
 
-  resources :friendships
+    resources :friendships, :path => 'friends' do
+        member do
+            post 'event', :action => 'create_from_event'
+        end
+    end
 
-  resources :groupings
+    resources :groups do
+        resources :groupings, :path => 'members'
+    end
 
-  resources :groups
+    resources :events do
+        resources :invites
+    end
 
-  resources :invites
-
-  resources :events
-
-  devise_for :users
+    devise_for :users
 end

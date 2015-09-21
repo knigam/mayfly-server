@@ -1,7 +1,7 @@
 class FriendshipsController < ApplicationController
   before_action :set_friendship, only: [:show, :edit, :update, :destroy]
 
-  respond_to :html
+  respond_to :html, :json
 
   def index
     @friendships = Friendship.all
@@ -21,7 +21,10 @@ class FriendshipsController < ApplicationController
   end
 
   def create
-    @friendship = Friendship.new(friendship_params)
+    if not friend = User.find_by_email(params[:friend_email])
+        @friendship.error(:friend_email, "User account doesn't exist")
+    end
+    @friendship = current_user.friendships.build(friend_id: friend, friend_name: params[:friend_name])
     @friendship.save
     respond_with(@friendship)
   end
@@ -36,9 +39,17 @@ class FriendshipsController < ApplicationController
     respond_with(@friendship)
   end
 
+  def create_from_event
+      @event = current_user.events.find(params[:event_id])
+      @users = @event.invites.where(attending: true).map{|i| i.user}
+      @users.each do |u|
+          current_user.friendships.create(friend_id: u.id, friend_name: u.name)
+      end
+  end
+
   private
     def set_friendship
-      @friendship = Friendship.find(params[:id])
+      @friendship = current_user.friendships.find(params[:id])
     end
 
     def friendship_params
